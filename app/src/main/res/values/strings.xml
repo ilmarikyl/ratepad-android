@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RatePad – Currency Converter Widget</string>
+    <string name="widget_description">Convert currencies with a calculator interface</string>
+</resources>
