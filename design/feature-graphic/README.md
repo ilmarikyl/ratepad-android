@@ -1,0 +1,1 @@
+If modifications in the feature graphic image are needed, the contents of `figma.tsx` can be copied to Figma Make. If the icon is not displayed correctly, copy in the prompt and ask the AI to generate a new icon.
