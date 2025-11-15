@@ -3,11 +3,11 @@
     android:configure="com.ilmariware.currencyconverterwidget.WidgetConfigurationActivity"
     android:description="@string/widget_description"
     android:initialLayout="@layout/widget_layout"
-    android:minWidth="180dp"
+    android:minWidth="120dp"
     android:minHeight="180dp"
     android:previewImage="@mipmap/ic_launcher"
     android:resizeMode="horizontal|vertical"
-    android:targetCellWidth="3"
+    android:targetCellWidth="2"
     android:targetCellHeight="3"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen" />
