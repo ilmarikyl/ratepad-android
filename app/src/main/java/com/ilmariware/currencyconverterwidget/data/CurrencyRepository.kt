@@ -20,10 +20,15 @@ class CurrencyRepository(context: Context) {
             .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
             .build()
         
+        // Configure Gson explicitly to handle reflection properly
+        val gson = com.google.gson.GsonBuilder()
+            .setLenient()
+            .create()
+        
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.frankfurter.app/")
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         
         api = retrofit.create(ExchangeRateApi::class.java)
@@ -99,7 +104,8 @@ class CurrencyRepository(context: Context) {
             Log.e(TAG, "Failed to fetch rate: ${response.code()}")
             Result.failure(Exception("Failed to fetch exchange rate: ${response.code()}"))
         } catch (e: Exception) {
-            Log.e(TAG, "Error fetching exchange rate", e)
+            Log.e(TAG, "Error fetching exchange rate: ${e.javaClass.name}: ${e.message}", e)
+            e.printStackTrace()
             
             // Try to return cached rate as fallback
             val cachedRate = preferences.getCachedRate(fromCurrency, toCurrency)
