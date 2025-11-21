@@ -1,8 +1,26 @@
 # RatePad – Currency Converter Widget for Android
 
+[![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/)
+[![Retrofit](https://img.shields.io/badge/Retrofit-48B983?style=for-the-badge&logo=square&logoColor=white)](https://square.github.io/retrofit/)
+[![Coroutines](https://img.shields.io/badge/Coroutines-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/docs/coroutines-overview.html)
+
 A home screen widget that provides a calculator-style interface for real-time currency conversion between major currencies.
 
-## Overview
+📱 **Get it on Google Play**: [RatePad - Currency Widget](https://play.google.com/store/apps/details?id=com.ilmariware.currencyconverterwidget)
+
+<table>
+<tr>
+<td width="60%" valign="top">
+<img src="design/feature-graphic/1024x500.png" alt="RatePad Feature Graphic" height="300">
+</td>
+<td width="40%" valign="top">
+<img src="design/play-store-screenshots/screenshot3.png" alt="RatePad Widget Themes" height="350">
+</td>
+</tr>
+</table>
+
+## 🎯 Overview
 
 This Android widget allows users to convert currencies directly from their home screen without opening an app. It features:
 
@@ -15,7 +33,7 @@ This Android widget allows users to convert currencies directly from their home 
 - Automatic periodic rate updates via WorkManager
 - Display of last rate update timestamp
 
-## Technical Stack
+## 🛠️ Technical Stack
 
 - **Language**: Kotlin
 - **Min SDK**: 26 (Android 8.0)
@@ -28,7 +46,7 @@ This Android widget allows users to convert currencies directly from their home 
   - WorkManager 2.9.0 - Scheduled background updates
   - Coroutines 1.7.3 - Async operations
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 app/src/main/java/com/ilmariware/currencyconverterwidget/
@@ -56,7 +74,7 @@ app/src/main/res/
     └── widget_info.xml                     # Widget metadata (size, config)
 ```
 
-## Key Components
+## 🔑 Key Components
 
 ### 1. Supported Currencies
 
@@ -140,7 +158,7 @@ Widget updates happen via:
 2. **Scheduled updates**: WorkManager fetches new rates periodically
 3. **Button clicks**: Each button has PendingIntent broadcast receiver
 
-## Configuration
+## ⚙️ Configuration
 
 ### Widget Dimensions
 
@@ -169,22 +187,22 @@ Defined in `UpdateFrequency.kt`:
 - DAILY: Every 24 hours
 - WEEKLY: Every 168 hours
 
-## Development Setup
+## 🚀 Development Setup
 
-### Prerequisites
+### 📋 Prerequisites
 
 - Android Studio (latest version)
 - JDK 17 or higher
 - Android SDK 26+
 
-### Building
+### 🔨 Building
 
 1. Open project in Android Studio
 2. Sync Gradle dependencies
 3. Select device/emulator
 4. Run app
 
-### Adding Widget to Home Screen
+### 📲 Adding Widget to Home Screen
 
 1. Long-press on home screen
 2. Tap "Widgets"
@@ -192,7 +210,7 @@ Defined in `UpdateFrequency.kt`:
 4. Drag to home screen
 5. Configure currencies and update frequency
 
-## API Information
+## 🌐 API Information
 
 **Frankfurter API**
 
@@ -219,7 +237,7 @@ Example response:
 }
 ```
 
-## License
+## 📝 License
 
 This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
 
