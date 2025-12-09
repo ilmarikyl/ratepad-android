@@ -66,6 +66,17 @@ enum class WidgetTheme(
         targetTextColor = Color.parseColor("#F57C00"),
         buttonTextColor = Color.parseColor("#E65100"),
         timestampColor = Color.parseColor("#FFB74D")
+    ),
+
+    PURPLE(
+        displayName = "Purple",
+        backgroundColor = Color.parseColor("#F3E5F5"),
+        displayBackgroundDrawable = R.drawable.display_purple,
+        buttonBackgroundDrawable = R.drawable.button_purple,
+        textColor = Color.parseColor("#4A148C"),
+        targetTextColor = Color.parseColor("#6A1B9A"),
+        buttonTextColor = Color.parseColor("#4A148C"),
+        timestampColor = Color.parseColor("#9575CD")
     );
 
     companion object {
