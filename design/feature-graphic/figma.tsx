@@ -55,7 +55,7 @@ return (
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
               <Palette className="w-5 h-5 text-white mb-1" />
               <div className="text-white" style={{ fontSize: "16px" }}>
-                5 Themes
+                6 Themes
               </div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
