@@ -58,6 +58,13 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                     handleButtonClick(context, widgetId, buttonValue)
                 }
             }
+            ACTION_SWAP_CURRENCIES -> {
+                val widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+                
+                if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    handleSwapCurrencies(context, widgetId)
+                }
+            }
         }
     }
 
@@ -74,8 +81,25 @@ class CurrencyConverterWidget : AppWidgetProvider() {
         updateWidget(context, appWidgetManager, widgetId)
     }
 
+    private fun handleSwapCurrencies(context: Context, widgetId: Int) {
+        val preferences = WidgetPreferences(context)
+        
+        // Get current currencies
+        val sourceCurrency = preferences.getSourceCurrency(widgetId)
+        val targetCurrency = preferences.getTargetCurrency(widgetId)
+        
+        // Swap them
+        preferences.setSourceCurrency(widgetId, targetCurrency)
+        preferences.setTargetCurrency(widgetId, sourceCurrency)
+        
+        // Update the widget display
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        updateWidget(context, appWidgetManager, widgetId)
+    }
+
     companion object {
         const val ACTION_BUTTON_CLICK = "com.ilmariware.currencyconverterwidget.BUTTON_CLICK"
+        const val ACTION_SWAP_CURRENCIES = "com.ilmariware.currencyconverterwidget.SWAP_CURRENCIES"
         const val EXTRA_WIDGET_ID = "widget_id"
         const val EXTRA_BUTTON_VALUE = "button_value"
 
@@ -108,6 +132,13 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 views.setTextColor(R.id.targetCurrencyLabel, theme.targetTextColor)
                 views.setTextColor(R.id.outputDisplay, theme.targetTextColor)
                 views.setTextColor(R.id.lastUpdatedText, theme.timestampColor)
+                
+                // Tint swap button to match theme
+                try {
+                    views.setInt(R.id.btnSwap, "setColorFilter", theme.textColor)
+                } catch (e: Exception) {
+                    Log.d(TAG, "Could not set swap button color")
+                }
                 
                 // Set currency labels
                 views.setTextViewText(R.id.sourceCurrencyLabel, sourceCurrency.code)
@@ -245,6 +276,31 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 views.setOnClickPendingIntent(R.id.btnClear, clearPendingIntent)
             } catch (e: Exception) {
                 // Layout doesn't have clear button
+            }
+            
+            // Swap currencies button
+            try {
+                val swapIntent = Intent(context, CurrencyConverterWidget::class.java).apply {
+                    action = ACTION_SWAP_CURRENCIES
+                    putExtra(EXTRA_WIDGET_ID, widgetId)
+                }
+                
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+                
+                val swapPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    widgetId * 100 + 98,
+                    swapIntent,
+                    flags
+                )
+                
+                views.setOnClickPendingIntent(R.id.btnSwap, swapPendingIntent)
+            } catch (e: Exception) {
+                // Layout doesn't have swap button
             }
         }
 
