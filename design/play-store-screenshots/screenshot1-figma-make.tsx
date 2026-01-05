@@ -1,4 +1,4 @@
-import { Globe, Palette, WifiOff, Maximize2, Delete } from "lucide-react";
+import { Globe, Palette, WifiOff, Maximize2, Delete, ArrowLeftRight } from "lucide-react";
 import appIcon from "figma:asset/d2b84eb33c33fad845a17b29f0f051216ef87e46.png";
 
 export default function Screenshot1() {
@@ -42,7 +42,7 @@ export default function Screenshot1() {
               className='bg-gradient-to-br from-slate-800 to-slate-900 rounded-[38px] overflow-hidden'
               style={{
                 width: "480px",
-                height: "900px",
+                height: "1020px",
               }}
             >
               {/* Phone Content */}
@@ -55,28 +55,32 @@ export default function Screenshot1() {
                 {/* Currency Widget */}
                 <div className='bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl shadow-xl p-6 mb-6'>
                   {/* Header */}
-                  <div className='flex items-start justify-between mb-4'>
-                    <div>
-                      <div className='text-orange-600' style={{ fontSize: "18px" }}>
-                        USD
+                  <div className='bg-amber-100 rounded-xl p-4 mb-4'>
+                    <div className='flex items-start justify-between'>
+                      <div>
+                        <div className='text-orange-600' style={{ fontSize: "18px" }}>
+                          USD
+                        </div>
+                        <div className='text-orange-600' style={{ fontSize: "40px", lineHeight: "1" }}>
+                          10
+                        </div>
                       </div>
-                      <div className='text-orange-600' style={{ fontSize: "40px", lineHeight: "1" }}>
-                        10
-                      </div>
-                    </div>
 
-                    <div className='text-right'>
-                      <div className='text-orange-600' style={{ fontSize: "18px" }}>
-                        EUR
-                      </div>
-                      <div className='text-orange-600' style={{ fontSize: "40px", lineHeight: "1" }}>
-                        8.59
+                      <ArrowLeftRight className='text-orange-600 w-6 h-6 mt-1' />
+
+                      <div className='text-right'>
+                        <div className='text-orange-500' style={{ fontSize: "18px" }}>
+                          EUR
+                        </div>
+                        <div className='text-orange-500' style={{ fontSize: "40px", lineHeight: "1" }}>
+                          8.59
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Update Banner */}
-                  <div className='bg-amber-200/50 rounded-lg text-center py-1 mb-4'>
+                  <div className='text-center py-1 mb-4'>
                     <span className='text-orange-600' style={{ fontSize: "14px" }}>
                       Rate updated: just now
                     </span>
@@ -114,7 +118,15 @@ export default function Screenshot1() {
                 </div>
 
                 {/* App Icons */}
-                <div className='flex gap-5 justify-center mt-auto'>
+                <div className='flex gap-5 justify-center mt-auto mb-5'>
+                  <div className='w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl'></div>
+                  <div className='w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl'></div>
+                  <div className='w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl'></div>
+                  <div className='w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl'></div>
+                </div>
+
+                {/* Second row of app icons */}
+                <div className='flex gap-5 justify-center'>
                   <div className='w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl'></div>
                   <div className='w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl'></div>
                   <div className='w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl'></div>

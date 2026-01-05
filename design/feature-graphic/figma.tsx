@@ -43,7 +43,7 @@ return (
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
               <Globe className="w-5 h-5 text-white mb-1" />
               <div className="text-white" style={{ fontSize: "16px" }}>
-                31 Currencies
+                32 Currencies
               </div>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
