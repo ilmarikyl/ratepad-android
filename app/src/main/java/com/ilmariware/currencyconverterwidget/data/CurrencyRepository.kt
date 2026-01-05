@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class CurrencyRepository(context: Context) {
     private val preferences = WidgetPreferences(context)
     private val api: ExchangeRateApi
+    private val fallbackApi: FallbackExchangeRateApi
 
     init {
         val okHttpClient = okhttp3.OkHttpClient.Builder()
@@ -32,6 +33,7 @@ class CurrencyRepository(context: Context) {
             .build()
         
         api = retrofit.create(ExchangeRateApi::class.java)
+        fallbackApi = FallbackExchangeRateApi()
     }
 
     /**
@@ -73,36 +75,57 @@ class CurrencyRepository(context: Context) {
                 }
             }
 
-            // Fetch fresh data from API
-            Log.d(TAG, "Fetching rate from API: $fromCurrency -> $toCurrency")
-            val response = api.getLatestRates(base = fromCurrency.code)
+            // Fetch fresh data from primary API (Frankfurter)
+            Log.d(TAG, "Fetching rate from primary API: $fromCurrency -> $toCurrency")
+            var rate: Double? = null
             
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null) {
-                    val rate = body.rates[toCurrency.code]
-                    if (rate != null) {
-                        val timestamp = System.currentTimeMillis()
-                        
-                        // Cache the rate
-                        preferences.setCachedRate(fromCurrency, toCurrency, rate)
-                        preferences.setCachedRateTimestamp(fromCurrency, toCurrency, timestamp)
-                        
-                        Log.d(TAG, "Successfully fetched rate: $rate")
-                        return@withContext Result.success(
-                            ExchangeRate(
-                                fromCurrency = fromCurrency,
-                                toCurrency = toCurrency,
-                                rate = rate,
-                                timestamp = timestamp
-                            )
-                        )
+            try {
+                val response = api.getLatestRates(base = fromCurrency.code)
+                
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        rate = body.rates[toCurrency.code]
+                        if (rate != null) {
+                            Log.d(TAG, "Successfully fetched rate from primary API: $rate")
+                        }
                     }
+                }
+                
+                if (rate == null) {
+                    Log.w(TAG, "Primary API failed or currency not supported, trying fallback API")
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Primary API error, trying fallback API: ${e.message}")
+            }
+            
+            // Try fallback API if primary failed
+            if (rate == null) {
+                rate = fallbackApi.getExchangeRate(fromCurrency.code, toCurrency.code)
+                if (rate != null) {
+                    Log.d(TAG, "Successfully fetched rate from fallback API: $rate")
                 }
             }
             
-            Log.e(TAG, "Failed to fetch rate: ${response.code()}")
-            Result.failure(Exception("Failed to fetch exchange rate: ${response.code()}"))
+            if (rate != null) {
+                val timestamp = System.currentTimeMillis()
+                
+                // Cache the rate
+                preferences.setCachedRate(fromCurrency, toCurrency, rate)
+                preferences.setCachedRateTimestamp(fromCurrency, toCurrency, timestamp)
+                
+                return@withContext Result.success(
+                    ExchangeRate(
+                        fromCurrency = fromCurrency,
+                        toCurrency = toCurrency,
+                        rate = rate,
+                        timestamp = timestamp
+                    )
+                )
+            }
+            
+            Log.e(TAG, "Failed to fetch rate from both APIs")
+            Result.failure(Exception("Failed to fetch exchange rate from all sources"))
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching exchange rate: ${e.javaClass.name}: ${e.message}", e)
             e.printStackTrace()
