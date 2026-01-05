@@ -34,6 +34,7 @@ enum class Currency(val code: String, val displayName: String, val symbol: Strin
     SGD("SGD", "Singapore Dollar", "S$"),
     THB("THB", "Thai Baht", "฿"),
     TRY("TRY", "Turkish Lira", "₺"),
+    TWD("TWD", "Taiwan Dollar", "NT$"),
     ZAR("ZAR", "South African Rand", "R");
 
     companion object {
