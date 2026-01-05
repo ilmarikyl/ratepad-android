@@ -26,12 +26,14 @@ This Android widget allows users to convert currencies directly from their home 
 
 - Calculator-style number pad interface
 - Real-time conversion as you type
-- Support for 31 major currencies with grouped display (9 common + 22 additional)
-- Five color themes (Classic, Dark, Ocean Blue, Mint Green, Sunset)
+- **Swap button** to quickly exchange source and target currencies
+- Support for 32 major currencies with grouped display (9 common + 23 additional)
+- Six color themes (Classic, Dark, Ocean Blue, Mint Green, Sunset, Purple)
 - Configurable update intervals (12 hours, daily, weekly)
 - Offline functionality with cached exchange rates
 - Automatic periodic rate updates via WorkManager
 - Display of last rate update timestamp
+- **Dual API support** with automatic fallback for extended currency coverage
 
 ## 🛠️ Technical Stack
 
@@ -39,9 +41,12 @@ This Android widget allows users to convert currencies directly from their home 
 - **Min SDK**: 26 (Android 8.0)
 - **Target SDK**: 36
 - **Architecture**: MVVM-like with Repository pattern
-- **API**: Frankfurter API (European Central Bank data, free, no key required)
+- **APIs**: 
+  - Primary: Frankfurter API (European Central Bank data, free, no key required)
+  - Fallback: @fawazahmed0/currency-api (jsDelivr CDN, free, no key required)
 - **Libraries**:
   - Retrofit 2.9.0 - API calls
+  - OkHttp 4.12.0 - HTTP client
   - Gson 2.10.1 - JSON parsing
   - WorkManager 2.9.0 - Scheduled background updates
   - Coroutines 1.7.3 - Async operations
@@ -54,18 +59,23 @@ app/src/main/java/com/ilmariware/currencyconverterwidget/
 ├── WidgetConfigurationActivity.kt           # Widget setup screen
 ├── data/
 │   ├── CurrencyRepository.kt               # API calls & caching logic
-│   ├── ExchangeRateApi.kt                  # Retrofit interface
+│   ├── ExchangeRateApi.kt                  # Retrofit interface (Frankfurter)
+│   ├── FallbackExchangeRateApi.kt          # Fallback API (jsDelivr CDN)
 │   ├── WidgetPreferences.kt                # SharedPreferences wrapper
 │   └── models/
-│       ├── Currency.kt                     # Currency enum (31 currencies)
+│       ├── Currency.kt                     # Currency enum (32 currencies)
 │       ├── ExchangeRate.kt                 # Data models
-│       └── UpdateFrequency.kt              # Update interval enum
+│       ├── UpdateFrequency.kt              # Update interval enum
+│       └── WidgetTheme.kt                  # Theme definitions (6 themes)
 └── widget/
     ├── CurrencyConverterWidget.kt          # AppWidgetProvider - main widget logic
     ├── WidgetCalculator.kt                 # Calculator input handling
     └── WidgetUpdateWorker.kt               # WorkManager for scheduled updates
 
 app/src/main/res/
+├── drawable/
+│   ├── ic_swap.xml                         # Swap currencies icon
+│   └── ...                                 # Theme-specific drawables
 ├── layout/
 │   ├── activity_main.xml                   # Main activity layout
 │   ├── activity_widget_configuration.xml   # Configuration UI
@@ -78,7 +88,7 @@ app/src/main/res/
 
 ### 1. Supported Currencies
 
-The widget supports **31 major world currencies** organized in two groups:
+The widget supports **32 major world currencies** organized in two groups:
 
 **Common Currencies (9):**
 
@@ -92,7 +102,7 @@ The widget supports **31 major world currencies** organized in two groups:
 - CNY (Chinese Yuan)
 - INR (Indian Rupee)
 
-**All Currencies (22 additional):**
+**All Currencies (23 additional):**
 
 - BGN (Bulgarian Lev)
 - BRL (Brazilian Real)
@@ -115,9 +125,12 @@ The widget supports **31 major world currencies** organized in two groups:
 - SGD (Singapore Dollar)
 - THB (Thai Baht)
 - TRY (Turkish Lira)
+- TWD (Taiwan Dollar)
 - ZAR (South African Rand)
 
 In the configuration screen, currencies are displayed in a grouped dropdown with section headers for easy navigation.
+
+**Note:** Most currencies are fetched from the Frankfurter API (European Central Bank data). Currencies not supported by Frankfurter (like TWD) automatically use the fallback API.
 
 ### 2. Widget Configuration Flow
 
@@ -134,10 +147,12 @@ When user adds widget:
 
 ### 3. Exchange Rate Management
 
-- **API**: `https://api.frankfurter.app/latest?base={currency}`
+- **Primary API**: Frankfurter API (`https://api.frankfurter.app/latest?base={currency}`)
+- **Fallback API**: @fawazahmed0/currency-api (`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/{base}.json`)
 - **Caching**: Rates stored in SharedPreferences with timestamp
 - **Offline**: Widget uses cached rates when network unavailable
 - **Updates**: WorkManager fetches new rates based on user preference
+- **Fallback Logic**: If primary API fails or doesn't support a currency, fallback API is automatically used
 
 ### 4. Calculator Logic
 
@@ -148,6 +163,7 @@ When user adds widget:
 - Triple zero (000) for quick entry
 - Backspace (⌫) to delete last digit
 - Clear (C) to reset to 0
+- **Swap (⇄)** to exchange source and target currencies
 - Max input length: 12 characters
 
 ### 5. Widget Update Mechanism
@@ -212,7 +228,7 @@ Defined in `UpdateFrequency.kt`:
 
 ## 🌐 API Information
 
-**Frankfurter API**
+### Primary: Frankfurter API
 
 - Base URL: `https://api.frankfurter.app/`
 - Endpoint: `/latest?base={CURRENCY_CODE}`
@@ -221,6 +237,7 @@ Defined in `UpdateFrequency.kt`:
 - Update frequency: Daily (around 4 PM CET)
 - Free tier: Unlimited requests
 - No API key required
+- Supported currencies: 30 major currencies
 
 Example response:
 
@@ -236,6 +253,34 @@ Example response:
   }
 }
 ```
+
+### Fallback: @fawazahmed0/currency-api
+
+- Base URL: `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/`
+- Endpoint: `{base}.json` (lowercase currency code)
+- Rate limit: CDN-hosted, very generous limits
+- Data source: Multiple sources aggregated
+- Update frequency: Daily
+- Free tier: Unlimited requests
+- No API key required
+- Supported currencies: 150+ currencies including TWD, cryptocurrencies, and more
+
+Example response:
+
+```json
+{
+  "date": "2025-01-05",
+  "usd": {
+    "eur": 0.85250961,
+    "twd": 31.3830683,
+    ...
+  }
+}
+```
+
+The app automatically falls back to this API when:
+- The primary Frankfurter API fails
+- The requested currency is not supported by Frankfurter (e.g., TWD)
 
 ## 📝 License
 
