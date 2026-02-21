@@ -38,15 +38,29 @@ class WidgetUpdateWorker(
             val sourceCurrency = preferences.getSourceCurrency(widgetId)
             val targetCurrency = preferences.getTargetCurrency(widgetId)
             
-            // Fetch updated exchange rate
-            val result = repository.getExchangeRate(
+            // Fetch updated exchange rates in BOTH directions
+            // This ensures that swapping currencies always has fresh rates
+            val result1 = repository.getExchangeRate(
                 sourceCurrency,
                 targetCurrency,
                 forceRefresh = true
             )
             
-            if (result.isSuccess) {
-                Log.d(TAG, "Successfully updated exchange rate for widget $widgetId")
+            val result2 = repository.getExchangeRate(
+                targetCurrency,
+                sourceCurrency,
+                forceRefresh = true
+            )
+            
+            // Consider it successful if at least one direction succeeded
+            if (result1.isSuccess || result2.isSuccess) {
+                if (result1.isSuccess && result2.isSuccess) {
+                    Log.d(TAG, "Successfully updated exchange rates in both directions for widget $widgetId")
+                } else if (result1.isSuccess) {
+                    Log.w(TAG, "Updated $sourceCurrency -> $targetCurrency, but reverse direction failed")
+                } else {
+                    Log.w(TAG, "Updated $targetCurrency -> $sourceCurrency, but reverse direction failed")
+                }
                 
                 // Update the widget display
                 val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
@@ -58,7 +72,7 @@ class WidgetUpdateWorker(
                 
                 Result.success()
             } else {
-                Log.e(TAG, "Failed to update exchange rate for widget $widgetId")
+                Log.e(TAG, "Failed to update exchange rates in both directions for widget $widgetId")
                 Result.retry()
             }
         } catch (e: Exception) {
