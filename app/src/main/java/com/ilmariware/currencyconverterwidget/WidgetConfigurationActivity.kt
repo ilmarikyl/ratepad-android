@@ -1,27 +1,35 @@
 package com.ilmariware.currencyconverterwidget
 
-import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RadioGroup
+import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.lifecycleScope
 import com.ilmariware.currencyconverterwidget.data.CurrencyRepository
 import com.ilmariware.currencyconverterwidget.data.WidgetPreferences
 import com.ilmariware.currencyconverterwidget.data.models.Currency
 import com.ilmariware.currencyconverterwidget.data.models.UpdateFrequency
+import com.ilmariware.currencyconverterwidget.data.models.WidgetTheme
 import com.ilmariware.currencyconverterwidget.widget.CurrencyConverterWidget
 import com.ilmariware.currencyconverterwidget.widget.WidgetUpdateWorker
 import kotlinx.coroutines.launch
@@ -37,6 +45,15 @@ class WidgetConfigurationActivity : AppCompatActivity() {
     private lateinit var themeSpinner: Spinner
     private lateinit var addWidgetButton: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var seekBarOpacity: SeekBar
+    private lateinit var opacityValueText: TextView
+    private lateinit var previewContainer: FrameLayout
+    private lateinit var widgetPreview: LinearLayout
+    private lateinit var previewSourceLabel: TextView
+    private lateinit var previewTargetLabel: TextView
+    private lateinit var previewInputDisplay: TextView
+    private lateinit var previewOutputDisplay: TextView
+    private lateinit var previewBackground: GradientDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +81,7 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         setupSpinners()
         setupThemeSpinner()
         setupListeners()
+        updatePreview()
     }
 
     private fun initViews() {
@@ -73,6 +91,67 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         themeSpinner = findViewById(R.id.themeSpinner)
         addWidgetButton = findViewById(R.id.addWidgetButton)
         progressBar = findViewById(R.id.progressBar)
+        seekBarOpacity = findViewById(R.id.seekBarOpacity)
+        opacityValueText = findViewById(R.id.opacityValueText)
+        previewContainer = findViewById(R.id.previewContainer)
+        widgetPreview = findViewById(R.id.widgetPreview)
+        previewSourceLabel = findViewById(R.id.previewSourceLabel)
+        previewTargetLabel = findViewById(R.id.previewTargetLabel)
+        previewInputDisplay = findViewById(R.id.previewInputDisplay)
+        previewOutputDisplay = findViewById(R.id.previewOutputDisplay)
+
+        val density = resources.displayMetrics.density
+        previewContainer.background = CheckerboardDrawable(tileSizePx = 20f * density)
+
+        previewBackground = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = 24f
+        }
+        widgetPreview.background = previewBackground
+    }
+
+    /** Draws a classic grey/white checkerboard pattern to make transparency clearly visible. */
+    private class CheckerboardDrawable(private val tileSizePx: Float = 40f) : Drawable() {
+        private val lightPaint = Paint().apply { color = Color.parseColor("#CCCCCC") }
+        private val darkPaint = Paint().apply { color = Color.parseColor("#888888") }
+
+        override fun draw(canvas: Canvas) {
+            val cols = (bounds.width() / tileSizePx).toInt() + 2
+            val rows = (bounds.height() / tileSizePx).toInt() + 2
+            for (row in 0..rows) {
+                for (col in 0..cols) {
+                    val paint = if ((row + col) % 2 == 0) lightPaint else darkPaint
+                    canvas.drawRect(
+                        bounds.left + col * tileSizePx,
+                        bounds.top + row * tileSizePx,
+                        bounds.left + (col + 1) * tileSizePx,
+                        bounds.top + (row + 1) * tileSizePx,
+                        paint
+                    )
+                }
+            }
+        }
+
+        override fun setAlpha(alpha: Int) {}
+        override fun setColorFilter(cf: android.graphics.ColorFilter?) {}
+        @Deprecated("Deprecated in Java")
+        override fun getOpacity() = android.graphics.PixelFormat.OPAQUE
+    }
+
+    private fun updatePreview() {
+        val theme = WidgetTheme.values()[themeSpinner.selectedItemPosition]
+        val transparency = seekBarOpacity.progress
+        val alpha = ((100 - transparency) / 100f * 255).toInt()
+        val colorWithAlpha = ColorUtils.setAlphaComponent(theme.backgroundColor, alpha)
+
+        previewBackground.setColor(colorWithAlpha)
+
+        previewSourceLabel.setTextColor(theme.textColor)
+        previewInputDisplay.setTextColor(theme.textColor)
+        previewTargetLabel.setTextColor(theme.targetTextColor)
+        previewOutputDisplay.setTextColor(theme.targetTextColor)
+
+        opacityValueText.text = "$transparency%"
     }
 
     private fun setupSpinners() {
@@ -88,11 +167,17 @@ class WidgetConfigurationActivity : AppCompatActivity() {
     }
 
     private fun setupThemeSpinner() {
-        val themes = com.ilmariware.currencyconverterwidget.data.models.WidgetTheme.values()
+        val themes = WidgetTheme.values()
         val adapter = ThemeSpinnerAdapter(this, themes.toList())
-        
+
         themeSpinner.adapter = adapter
-        themeSpinner.setSelection(0) // Classic theme by default
+        themeSpinner.setSelection(0)
+        themeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                updatePreview()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
     }
     
     // Custom adapter for grouped currency display
@@ -165,8 +250,8 @@ class WidgetConfigurationActivity : AppCompatActivity() {
     // Custom adapter to show color preview
     private class ThemeSpinnerAdapter(
         context: Context,
-        private val themes: List<com.ilmariware.currencyconverterwidget.data.models.WidgetTheme>
-    ) : ArrayAdapter<com.ilmariware.currencyconverterwidget.data.models.WidgetTheme>(context, 0, themes) {
+        private val themes: List<WidgetTheme>
+    ) : ArrayAdapter<WidgetTheme>(context, 0, themes) {
         
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             return createView(position, convertView, parent)
@@ -209,6 +294,14 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         addWidgetButton.setOnClickListener {
             saveConfigurationAndFinish()
         }
+
+        seekBarOpacity.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                updatePreview()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
     }
 
     private fun saveConfigurationAndFinish() {
@@ -231,17 +324,19 @@ class WidgetConfigurationActivity : AppCompatActivity() {
             else -> UpdateFrequency.DAILY
         }
         
-        val selectedTheme = com.ilmariware.currencyconverterwidget.data.models.WidgetTheme.values()[themeSpinner.selectedItemPosition]
-        
+        val selectedTheme = WidgetTheme.values()[themeSpinner.selectedItemPosition]
+        val opacity = 100 - seekBarOpacity.progress
+
         // Show loading
         addWidgetButton.isEnabled = false
         progressBar.visibility = View.VISIBLE
-        
+
         // Save configuration
         preferences.setSourceCurrency(widgetId, sourceCurrency)
         preferences.setTargetCurrency(widgetId, targetCurrency)
         preferences.setUpdateFrequency(widgetId, updateFrequency)
         preferences.setTheme(widgetId, selectedTheme)
+        preferences.setOpacity(widgetId, opacity)
         preferences.setCurrentInput(widgetId, "0")
         
         // Fetch initial exchange rate

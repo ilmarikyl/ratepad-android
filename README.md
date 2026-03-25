@@ -27,8 +27,9 @@ This Android widget allows users to convert currencies directly from their home 
 - Calculator-style number pad interface
 - Real-time conversion as you type
 - **Swap button** to quickly exchange source and target currencies
-- Support for 32 major currencies with grouped display (9 common + 23 additional)
+- Support for 40 major currencies with grouped display (9 common + 31 additional)
 - Six color themes (Classic, Dark, Ocean Blue, Mint Green, Sunset, Purple)
+- Adjustable widget transparency (0–100%) with live preview in configuration screen
 - Configurable update intervals (12 hours, daily, weekly)
 - Offline functionality with cached exchange rates
 - Automatic periodic rate updates via WorkManager
@@ -88,7 +89,7 @@ app/src/main/res/
 
 ### 1. Supported Currencies
 
-The widget supports **32 major world currencies** organized in two groups:
+The widget supports **40 major world currencies** organized in two groups:
 
 **Common Currencies (9):**
 
@@ -102,8 +103,9 @@ The widget supports **32 major world currencies** organized in two groups:
 - CNY (Chinese Yuan)
 - INR (Indian Rupee)
 
-**All Currencies (23 additional):**
+**All Currencies (31 additional):**
 
+- AED (UAE Dirham)
 - BGN (Bulgarian Lev)
 - BRL (Brazilian Real)
 - CZK (Czech Koruna)
@@ -114,18 +116,25 @@ The widget supports **32 major world currencies** organized in two groups:
 - ILS (Israeli Shekel)
 - ISK (Icelandic Króna)
 - KRW (South Korean Won)
+- KWD (Kuwaiti Dinar)
 - MXN (Mexican Peso)
 - MYR (Malaysian Ringgit)
 - NOK (Norwegian Krone)
 - NZD (New Zealand Dollar)
 - PHP (Philippine Peso)
+- PKR (Pakistani Rupee)
 - PLN (Polish Złoty)
+- QAR (Qatari Riyal)
 - RON (Romanian Leu)
+- RUB (Russian Ruble)
+- SAR (Saudi Riyal)
 - SEK (Swedish Krona)
 - SGD (Singapore Dollar)
 - THB (Thai Baht)
 - TRY (Turkish Lira)
 - TWD (Taiwan Dollar)
+- UAH (Ukrainian Hryvnia)
+- VND (Vietnamese Dong)
 - ZAR (South African Rand)
 
 In the configuration screen, currencies are displayed in a grouped dropdown with section headers for easy navigation.
@@ -139,11 +148,12 @@ When user adds widget:
 1. `WidgetConfigurationActivity` opens
 2. User selects source/target currencies from grouped dropdown
 3. User selects color theme with preview
-4. User selects update frequency (12h/daily/weekly)
-5. Activity fetches initial exchange rate from API
-6. Configuration saved to SharedPreferences
-7. WorkManager schedules periodic updates
-8. Widget is created and displayed
+4. User adjusts transparency slider (0–100%) with live widget preview
+5. User selects update frequency (12h/daily/weekly)
+6. Activity fetches initial exchange rate from API
+7. Configuration saved to SharedPreferences
+8. WorkManager schedules periodic updates
+9. Widget is created and displayed
 
 ### 3. Exchange Rate Management
 

@@ -13,6 +13,7 @@ enum class Currency(val code: String, val displayName: String, val symbol: Strin
     INR("INR", "Indian Rupee", "₹", true),
     
     // All Other Currencies (Alphabetical)
+    AED("AED", "UAE Dirham", "د.إ"),
     BGN("BGN", "Bulgarian Lev", "лв"),
     BRL("BRL", "Brazilian Real", "R$"),
     CZK("CZK", "Czech Koruna", "Kč"),
@@ -23,18 +24,25 @@ enum class Currency(val code: String, val displayName: String, val symbol: Strin
     ILS("ILS", "Israeli Shekel", "₪"),
     ISK("ISK", "Icelandic Króna", "kr"),
     KRW("KRW", "South Korean Won", "₩"),
+    KWD("KWD", "Kuwaiti Dinar", "د.ك"),
     MXN("MXN", "Mexican Peso", "MX$"),
     MYR("MYR", "Malaysian Ringgit", "RM"),
     NOK("NOK", "Norwegian Krone", "kr"),
     NZD("NZD", "New Zealand Dollar", "NZ$"),
     PHP("PHP", "Philippine Peso", "₱"),
+    PKR("PKR", "Pakistani Rupee", "₨"),
     PLN("PLN", "Polish Złoty", "zł"),
+    QAR("QAR", "Qatari Riyal", "ر.ق"),
     RON("RON", "Romanian Leu", "lei"),
+    RUB("RUB", "Russian Ruble", "₽"),
+    SAR("SAR", "Saudi Riyal", "ر.س"),
     SEK("SEK", "Swedish Krona", "kr"),
     SGD("SGD", "Singapore Dollar", "S$"),
     THB("THB", "Thai Baht", "฿"),
     TRY("TRY", "Turkish Lira", "₺"),
     TWD("TWD", "Taiwan Dollar", "NT$"),
+    UAH("UAH", "Ukrainian Hryvnia", "₴"),
+    VND("VND", "Vietnamese Dong", "₫"),
     ZAR("ZAR", "South African Rand", "R");
 
     companion object {

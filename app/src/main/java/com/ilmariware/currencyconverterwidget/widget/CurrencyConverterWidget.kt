@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.RemoteViews
+import androidx.core.graphics.ColorUtils
 import com.ilmariware.currencyconverterwidget.R
 import com.ilmariware.currencyconverterwidget.data.CurrencyRepository
 import com.ilmariware.currencyconverterwidget.data.WidgetPreferences
@@ -124,15 +125,19 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 val views = RemoteViews(context.packageName, R.layout.widget_layout)
                 Log.d(TAG, "RemoteViews created")
                 
-                // Apply theme colors
-                views.setInt(R.id.widgetRoot, "setBackgroundColor", theme.backgroundColor)
+                // Apply theme colors with opacity
+                val opacity = preferences.getOpacity(widgetId)
+                val alpha = (opacity / 100f * 255).toInt()
+                val colorWithAlpha = ColorUtils.setAlphaComponent(theme.backgroundColor, alpha)
+                views.setInt(R.id.widgetRoot, "setBackgroundColor", colorWithAlpha)
                 views.setInt(R.id.displayContainer, "setBackgroundResource", theme.displayBackgroundDrawable)
                 views.setTextColor(R.id.sourceCurrencyLabel, theme.textColor)
                 views.setTextColor(R.id.inputDisplay, theme.textColor)
                 views.setTextColor(R.id.targetCurrencyLabel, theme.targetTextColor)
                 views.setTextColor(R.id.outputDisplay, theme.targetTextColor)
+                views.setTextColor(R.id.lastUpdatedLabel, theme.timestampColor)
                 views.setTextColor(R.id.lastUpdatedText, theme.timestampColor)
-                
+
                 // Tint swap button to match theme
                 try {
                     views.setInt(R.id.btnSwap, "setColorFilter", theme.textColor)
@@ -163,7 +168,7 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                     try {
                         val timestamp = preferences.getCachedRateTimestamp(sourceCurrency, targetCurrency)
                         val timeText = formatTimestamp(timestamp)
-                        views.setTextViewText(R.id.lastUpdatedText, "Rate updated: $timeText")
+                        views.setTextViewText(R.id.lastUpdatedText, timeText)
                     } catch (e: Exception) {
                         // Layout doesn't have timestamp
                         Log.d(TAG, "No timestamp display in this layout")

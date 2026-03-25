@@ -50,6 +50,14 @@ class WidgetPreferences(context: Context) {
         prefs.edit().putInt(getKey(widgetId, KEY_THEME), theme.ordinal).apply()
     }
 
+    fun getOpacity(widgetId: Int): Int {
+        return prefs.getInt(getKey(widgetId, KEY_OPACITY), 100)
+    }
+
+    fun setOpacity(widgetId: Int, opacity: Int) {
+        prefs.edit().putInt(getKey(widgetId, KEY_OPACITY), opacity.coerceIn(0, 100)).apply()
+    }
+
     // Widget state
     fun getCurrentInput(widgetId: Int): String {
         return prefs.getString(getKey(widgetId, KEY_CURRENT_INPUT), "0") ?: "0"
@@ -89,6 +97,7 @@ class WidgetPreferences(context: Context) {
             .remove(getKey(widgetId, KEY_TARGET_CURRENCY))
             .remove(getKey(widgetId, KEY_UPDATE_FREQUENCY))
             .remove(getKey(widgetId, KEY_CURRENT_INPUT))
+            .remove(getKey(widgetId, KEY_OPACITY))
             .apply()
     }
 
@@ -111,6 +120,7 @@ class WidgetPreferences(context: Context) {
         private const val KEY_UPDATE_FREQUENCY = "update_frequency"
         private const val KEY_CURRENT_INPUT = "current_input"
         private const val KEY_THEME = "theme"
+        private const val KEY_OPACITY = "opacity"
     }
 }
 
