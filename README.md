@@ -64,7 +64,7 @@ app/src/main/java/com/ilmariware/currencyconverterwidget/
 │   ├── FallbackExchangeRateApi.kt          # Fallback API (jsDelivr CDN)
 │   ├── WidgetPreferences.kt                # SharedPreferences wrapper
 │   └── models/
-│       ├── Currency.kt                     # Currency enum (32 currencies)
+│       ├── Currency.kt                     # Currency enum (40 currencies)
 │       ├── ExchangeRate.kt                 # Data models
 │       ├── UpdateFrequency.kt              # Update interval enum
 │       └── WidgetTheme.kt                  # Theme definitions (6 themes)
