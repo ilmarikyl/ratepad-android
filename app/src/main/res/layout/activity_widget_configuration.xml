@@ -262,50 +262,163 @@
                 <FrameLayout
                     android:id="@+id/previewContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="wrap_content"
                     android:padding="20dp">
 
                     <LinearLayout
                         android:id="@+id/widgetPreview"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:orientation="vertical"
-                        android:padding="10dp"
-                        android:gravity="center">
+                        android:padding="8dp">
 
-                        <TextView
-                            android:id="@+id/previewSourceLabel"
-                            android:layout_width="wrap_content"
+                        <!-- Display area with side-by-side currencies -->
+                        <LinearLayout
+                            android:id="@+id/previewDisplayContainer"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="USD"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal"
+                            android:padding="8dp"
+                            android:layout_marginBottom="3dp">
 
-                        <TextView
-                            android:id="@+id/previewInputDisplay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1.00"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            <!-- Source currency (left) -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/previewTargetLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="EUR"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                                <TextView
+                                    android:id="@+id/previewSourceLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="USD"
+                                    android:textSize="9sp"
+                                    android:textStyle="bold" />
 
+                                <TextView
+                                    android:id="@+id/previewInputDisplay"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1.00"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <!-- Target currency (right) -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/previewTargetLabel"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="EUR"
+                                    android:textSize="9sp"
+                                    android:textStyle="bold"
+                                    android:gravity="end" />
+
+                                <TextView
+                                    android:id="@+id/previewOutputDisplay"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="0.92"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold"
+                                    android:gravity="end" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Rate updated timestamp -->
                         <TextView
-                            android:id="@+id/previewOutputDisplay"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/previewTimestamp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="0.92"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:text="Rate updated: Just now"
+                            android:textSize="7sp"
+                            android:gravity="center"
+                            android:layout_marginBottom="4dp" />
+
+                        <!-- Button grid preview (3x2 miniature) -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/previewBtn1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="24dp"
+                                    android:layout_weight="1"
+                                    android:layout_margin="1.5dp"
+                                    android:gravity="center"
+                                    android:text="1"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/previewBtn2"
+                                    android:layout_width="0dp"
+                                    android:layout_height="24dp"
+                                    android:layout_weight="1"
+                                    android:layout_margin="1.5dp"
+                                    android:gravity="center"
+                                    android:text="2"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/previewBtn3"
+                                    android:layout_width="0dp"
+                                    android:layout_height="24dp"
+                                    android:layout_weight="1"
+                                    android:layout_margin="1.5dp"
+                                    android:gravity="center"
+                                    android:text="3"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/previewBtn4"
+                                    android:layout_width="0dp"
+                                    android:layout_height="24dp"
+                                    android:layout_weight="1"
+                                    android:layout_margin="1.5dp"
+                                    android:gravity="center"
+                                    android:text="4"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/previewBtn5"
+                                    android:layout_width="0dp"
+                                    android:layout_height="24dp"
+                                    android:layout_weight="1"
+                                    android:layout_margin="1.5dp"
+                                    android:gravity="center"
+                                    android:text="5"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/previewBtn6"
+                                    android:layout_width="0dp"
+                                    android:layout_height="24dp"
+                                    android:layout_weight="1"
+                                    android:layout_margin="1.5dp"
+                                    android:gravity="center"
+                                    android:text="6"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+                        </LinearLayout>
 
                     </LinearLayout>
                 </FrameLayout>

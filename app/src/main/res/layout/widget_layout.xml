@@ -100,11 +100,7 @@
             android:layout_height="wrap_content"
             android:text="Rate updated: "
             android:textSize="9sp"
-            android:textColor="#999999"
-            android:shadowColor="#80FFFFFF"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="2.5" />
+            android:textColor="#999999" />
 
         <TextView
             android:id="@+id/lastUpdatedText"
@@ -113,11 +109,7 @@
             android:text="Just now"
             android:textSize="9sp"
             android:textStyle="bold"
-            android:textColor="#999999"
-            android:shadowColor="#80FFFFFF"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="2.5" />
+            android:textColor="#999999" />
 
     </LinearLayout>
 

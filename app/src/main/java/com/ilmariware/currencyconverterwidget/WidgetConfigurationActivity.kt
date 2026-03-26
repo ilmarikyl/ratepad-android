@@ -49,10 +49,13 @@ class WidgetConfigurationActivity : AppCompatActivity() {
     private lateinit var opacityValueText: TextView
     private lateinit var previewContainer: FrameLayout
     private lateinit var widgetPreview: LinearLayout
+    private lateinit var previewDisplayContainer: LinearLayout
     private lateinit var previewSourceLabel: TextView
     private lateinit var previewTargetLabel: TextView
     private lateinit var previewInputDisplay: TextView
     private lateinit var previewOutputDisplay: TextView
+    private lateinit var previewTimestamp: TextView
+    private lateinit var previewButtons: List<TextView>
     private lateinit var previewBackground: GradientDrawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,10 +98,17 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         opacityValueText = findViewById(R.id.opacityValueText)
         previewContainer = findViewById(R.id.previewContainer)
         widgetPreview = findViewById(R.id.widgetPreview)
+        previewDisplayContainer = findViewById(R.id.previewDisplayContainer)
         previewSourceLabel = findViewById(R.id.previewSourceLabel)
         previewTargetLabel = findViewById(R.id.previewTargetLabel)
         previewInputDisplay = findViewById(R.id.previewInputDisplay)
         previewOutputDisplay = findViewById(R.id.previewOutputDisplay)
+        previewTimestamp = findViewById(R.id.previewTimestamp)
+        previewButtons = listOf(
+            findViewById(R.id.previewBtn1), findViewById(R.id.previewBtn2),
+            findViewById(R.id.previewBtn3), findViewById(R.id.previewBtn4),
+            findViewById(R.id.previewBtn5), findViewById(R.id.previewBtn6)
+        )
 
         val density = resources.displayMetrics.density
         previewContainer.background = CheckerboardDrawable(tileSizePx = 20f * density)
@@ -146,10 +156,23 @@ class WidgetConfigurationActivity : AppCompatActivity() {
 
         previewBackground.setColor(colorWithAlpha)
 
+        previewDisplayContainer.setBackgroundResource(theme.displayBackgroundDrawable)
+
         previewSourceLabel.setTextColor(theme.textColor)
         previewInputDisplay.setTextColor(theme.textColor)
         previewTargetLabel.setTextColor(theme.targetTextColor)
         previewOutputDisplay.setTextColor(theme.targetTextColor)
+
+        if (transparency > 0) {
+            previewTimestamp.setTextColor(theme.buttonTextColor)
+        } else {
+            previewTimestamp.setTextColor(theme.timestampColor)
+        }
+
+        previewButtons.forEach { btn ->
+            btn.setBackgroundResource(theme.buttonBackgroundDrawable)
+            btn.setTextColor(theme.buttonTextColor)
+        }
 
         opacityValueText.text = "$transparency%"
     }

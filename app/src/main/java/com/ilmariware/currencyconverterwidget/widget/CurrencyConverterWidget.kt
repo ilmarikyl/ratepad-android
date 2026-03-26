@@ -135,8 +135,13 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 views.setTextColor(R.id.inputDisplay, theme.textColor)
                 views.setTextColor(R.id.targetCurrencyLabel, theme.targetTextColor)
                 views.setTextColor(R.id.outputDisplay, theme.targetTextColor)
-                views.setTextColor(R.id.lastUpdatedLabel, theme.timestampColor)
-                views.setTextColor(R.id.lastUpdatedText, theme.timestampColor)
+                if (opacity < 100) {
+                    views.setTextColor(R.id.lastUpdatedLabel, theme.buttonTextColor)
+                    views.setTextColor(R.id.lastUpdatedText, theme.buttonTextColor)
+                } else {
+                    views.setTextColor(R.id.lastUpdatedLabel, theme.timestampColor)
+                    views.setTextColor(R.id.lastUpdatedText, theme.timestampColor)
+                }
 
                 // Tint swap button to match theme
                 try {
