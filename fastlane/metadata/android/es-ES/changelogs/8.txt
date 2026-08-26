@@ -1,0 +1,4 @@
+• Icono de lápiz: edita divisas, tema y transparencia sin quitar el widget
+• Toca el importe convertido para copiarlo
+• Los widgets nuevos ocupan 3 celdas (puedes reducirlos)
+• Importes y teclas se adaptan automáticamente en widgets compactos

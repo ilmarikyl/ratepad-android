@@ -1,0 +1,1 @@
+Widget convertitore di valute con calcolatrice. 40 valute, 6 temi.

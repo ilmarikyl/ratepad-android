@@ -1,0 +1,4 @@
+• Ícone de lápis: edite moedas, tema e transparência sem remover o widget
+• Toque no valor convertido para copiar
+• Widgets novos começam com 3 células (você ainda pode diminuir)
+• Valores e teclado se adaptam automaticamente em widgets compactos

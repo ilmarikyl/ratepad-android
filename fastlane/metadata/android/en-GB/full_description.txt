@@ -1,0 +1,48 @@
+RatePad – Currency Converter Widget
+
+Convert currencies directly from your home screen with a calculator-style interface!
+
+✨ KEY FEATURES
+
+🧮 Calculator interface
+• Number pad on your home screen
+• Real-time conversion as you type
+• Quick 000 entry, backspace and clear
+
+💱 40 major currencies
+Common: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
+Also: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
+
+🎨 6 colour themes
+
+⚡ Smart features
+• Adjustable background transparency
+• Tap the converted amount to copy it
+• Edit currencies, theme and more from the widget
+• Works offline with cached rates
+• Automatic rate updates (12h, daily or weekly)
+• Last update time on the widget
+• Resizable, with text that scales on smaller sizes
+• Low battery impact
+
+🔒 Privacy
+• No personal data collection
+• No ads or tracking
+• Open-source exchange rates from the ECB
+• All data stored locally
+
+📱 Easy setup
+1. Long-press the home screen
+2. Add the RatePad widget
+3. Choose your currencies
+4. Pick a colour theme and transparency
+5. Select update frequency
+Done!
+
+Perfect for travellers, online shoppers, and anyone who juggles more than one currency.
+
+Free, no ads, no account required.
+
+Exchange rates from the Frankfurter API (European Central Bank data), with extra coverage via @fawazahmed0/currency-api.
+
+RatePad began as an Android widget on Google Play. We are not affiliated with any iOS app that later used the same name.

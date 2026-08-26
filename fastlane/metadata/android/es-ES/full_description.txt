@@ -1,0 +1,48 @@
+RatePad – Widget conversor de divisas
+
+¡Convierte divisas desde la pantalla de inicio con una interfaz tipo calculadora!
+
+✨ FUNCIONES PRINCIPALES
+
+🧮 Interfaz de calculadora
+• Teclado numérico en la pantalla de inicio
+• Conversión en tiempo real mientras escribes
+• Acceso rápido con 000, retroceso y borrar
+
+💱 40 divisas principales
+Comunes: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
+También: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
+
+🎨 6 temas de color
+
+⚡ Funciones inteligentes
+• Transparencia de fondo ajustable
+• Toca el importe convertido para copiarlo
+• Edita divisas, tema y más desde el widget
+• Funciona sin conexión con tipos de cambio en caché
+• Actualización automática (12 h, diaria o semanal)
+• Muestra la hora de la última actualización
+• Redimensionable, con texto que se adapta en tamaños pequeños
+• Bajo consumo de batería
+
+🔒 Privacidad
+• No recopila datos personales
+• Sin anuncios ni seguimiento
+• Tipos de cambio de código abierto del BCE
+• Todos los datos se guardan en el dispositivo
+
+📱 Configuración fácil
+1. Mantén pulsada la pantalla de inicio
+2. Añade el widget RatePad
+3. Elige las divisas
+4. Elige un tema de color y la transparencia
+5. Selecciona la frecuencia de actualización
+¡Listo!
+
+Ideal para viajeros, compras online y quien maneje más de una divisa.
+
+Gratis, sin anuncios y sin cuenta.
+
+Tipos de cambio de Frankfurter API (datos del Banco Central Europeo), con cobertura extra a través de @fawazahmed0/currency-api.
+
+RatePad nació como un widget de Android en Google Play. No estamos afiliados a ninguna app de iOS que más tarde usara el mismo nombre.

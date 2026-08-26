@@ -1,0 +1,4 @@
+• Pencil icon: edit currencies, theme and transparency without removing the widget
+• Tap the converted amount to copy it
+• New widgets start 3 cells wide (you can still resize them smaller)
+• Amounts and keypad labels now scale automatically on compact widgets

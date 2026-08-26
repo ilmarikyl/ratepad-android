@@ -1,0 +1,48 @@
+RatePad – Widget convertitore di valute
+
+Converti le valute dalla schermata Home con un’interfaccia a calcolatrice!
+
+✨ FUNZIONI PRINCIPALI
+
+🧮 Interfaccia a calcolatrice
+• Tastierino numerico sulla schermata Home
+• Conversione in tempo reale mentre scrivi
+• Inserimento rapido con 000, cancella e azzera
+
+💱 40 valute principali
+Comuni: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
+Anche: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
+
+🎨 6 temi colore
+
+⚡ Funzioni smart
+• Trasparenza dello sfondo regolabile
+• Tocca l’importo convertito per copiarlo
+• Modifica valute, tema e altro dal widget
+• Funziona offline con tassi in cache
+• Aggiornamento automatico (12 ore, giornaliero o settimanale)
+• Mostra l’ora dell’ultimo aggiornamento
+• Ridimensionabile, con testo che si adatta alle dimensioni ridotte
+• Basso impatto sulla batteria
+
+🔒 Privacy
+• Nessuna raccolta di dati personali
+• Niente pubblicità né tracciamento
+• Tassi di cambio open source della BCE
+• Tutti i dati restano sul dispositivo
+
+📱 Configurazione facile
+1. Tieni premuta la schermata Home
+2. Aggiungi il widget RatePad
+3. Scegli le valute
+4. Scegli un tema colore e la trasparenza
+5. Seleziona la frequenza di aggiornamento
+Fatto!
+
+Ideale per chi viaggia, fa shopping online o gestisce più di una valuta.
+
+Gratis, senza pubblicità e senza account.
+
+Tassi di cambio da Frankfurter API (dati della Banca centrale europea), con copertura extra via @fawazahmed0/currency-api.
+
+RatePad è nato come widget Android su Google Play. Non siamo affiliati ad alcuna app iOS che in seguito ha usato lo stesso nome.

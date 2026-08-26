@@ -1,0 +1,4 @@
+• Icona a matita: modifica valute, tema e trasparenza senza rimuovere il widget
+• Tocca l’importo convertito per copiarlo
+• I nuovi widget partono da 3 celle (puoi comunque ridurli)
+• Importi e tasti si adattano automaticamente sui widget compatti
