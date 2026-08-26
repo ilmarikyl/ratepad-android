@@ -86,7 +86,10 @@
                 android:textStyle="bold"
                 android:gravity="end"
                 android:maxLines="1"
-                android:ellipsize="none" />
+                android:ellipsize="none"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/copy_result" />
         </LinearLayout>
     </LinearLayout>
 

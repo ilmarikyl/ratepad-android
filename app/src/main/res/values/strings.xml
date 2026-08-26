@@ -6,4 +6,7 @@
     <string name="edit_widget_title">Edit Currency Widget</string>
     <string name="add_widget">Add Widget</string>
     <string name="save_changes">Save Changes</string>
+    <string name="copy_result">Copy converted amount</string>
+    <string name="copied_result_label">Converted amount</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
 </resources>

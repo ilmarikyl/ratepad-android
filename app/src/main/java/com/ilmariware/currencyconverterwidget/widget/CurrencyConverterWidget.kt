@@ -3,6 +3,8 @@ package com.ilmariware.currencyconverterwidget.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,6 +12,7 @@ import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.widget.RemoteViews
+import android.widget.Toast
 import androidx.core.graphics.ColorUtils
 import com.ilmariware.currencyconverterwidget.R
 import com.ilmariware.currencyconverterwidget.WidgetConfigurationActivity
@@ -78,6 +81,13 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                     handleSwapCurrencies(context, widgetId)
                 }
             }
+            ACTION_COPY_RESULT -> {
+                val widgetId = intent.getIntExtra(EXTRA_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+
+                if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    handleCopyResult(context, widgetId)
+                }
+            }
         }
     }
 
@@ -110,9 +120,33 @@ class CurrencyConverterWidget : AppWidgetProvider() {
         updateWidget(context, appWidgetManager, widgetId)
     }
 
+    private fun handleCopyResult(context: Context, widgetId: Int) {
+        val preferences = WidgetPreferences(context)
+        val sourceCurrency = preferences.getSourceCurrency(widgetId)
+        val targetCurrency = preferences.getTargetCurrency(widgetId)
+        val inputValue = preferences.getCurrentInput(widgetId).toDoubleOrNull() ?: 0.0
+        val cachedRate = preferences.getCachedRate(sourceCurrency, targetCurrency)
+        val resultText = if (cachedRate != null) {
+            String.format(Locale.US, "%.2f", inputValue * cachedRate)
+        } else {
+            "0.00"
+        }
+
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(
+            ClipData.newPlainText(context.getString(R.string.copied_result_label), resultText)
+        )
+
+        // Android 13+ already shows a clipboard confirmation overlay.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(context, context.getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
         const val ACTION_BUTTON_CLICK = "com.ilmariware.currencyconverterwidget.BUTTON_CLICK"
         const val ACTION_SWAP_CURRENCIES = "com.ilmariware.currencyconverterwidget.SWAP_CURRENCIES"
+        const val ACTION_COPY_RESULT = "com.ilmariware.currencyconverterwidget.COPY_RESULT"
         const val EXTRA_WIDGET_ID = "widget_id"
         const val EXTRA_BUTTON_VALUE = "button_value"
 
@@ -352,6 +386,32 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 views.setOnClickPendingIntent(R.id.btnSwap, swapPendingIntent)
             } catch (e: Exception) {
                 // Layout doesn't have swap button
+            }
+
+            // Copy converted result
+            try {
+                val copyIntent = Intent(context, CurrencyConverterWidget::class.java).apply {
+                    action = ACTION_COPY_RESULT
+                    putExtra(EXTRA_WIDGET_ID, widgetId)
+                }
+
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+
+                val copyPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    widgetId * 100 + 96,
+                    copyIntent,
+                    flags
+                )
+
+                views.setOnClickPendingIntent(R.id.outputDisplay, copyPendingIntent)
+                views.setOnClickPendingIntent(R.id.targetCurrencyLabel, copyPendingIntent)
+            } catch (e: Exception) {
+                // Layout doesn't have result display
             }
 
             // Edit / reconfigure button
