@@ -77,6 +77,9 @@ dependencies {
     
     // Coroutines for async operations
     implementation(libs.kotlinx.coroutines.android)
+
+    // Play In-App Review
+    implementation(libs.play.review.ktx)
     
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

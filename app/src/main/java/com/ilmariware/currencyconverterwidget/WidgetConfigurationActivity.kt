@@ -22,9 +22,11 @@ import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.lifecycleScope
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.ilmariware.currencyconverterwidget.data.CurrencyRepository
 import com.ilmariware.currencyconverterwidget.data.WidgetPreferences
 import com.ilmariware.currencyconverterwidget.data.models.Currency
@@ -57,6 +59,8 @@ class WidgetConfigurationActivity : AppCompatActivity() {
     private lateinit var previewTimestamp: TextView
     private lateinit var previewButtons: List<TextView>
     private lateinit var previewBackground: GradientDrawable
+    private lateinit var titleText: TextView
+    private var isReconfigure = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,11 +87,22 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         initViews()
         setupSpinners()
         setupThemeSpinner()
+        loadExistingConfiguration()
         setupListeners()
+        setupBackNavigation()
         updatePreview()
     }
 
+    private fun setupBackNavigation() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                closeConfiguration()
+            }
+        })
+    }
+
     private fun initViews() {
+        titleText = findViewById(R.id.titleText)
         sourceCurrencySpinner = findViewById(R.id.sourceCurrencySpinner)
         targetCurrencySpinner = findViewById(R.id.targetCurrencySpinner)
         updateFrequencyRadioGroup = findViewById(R.id.updateFrequencyRadioGroup)
@@ -183,10 +198,26 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         
         sourceCurrencySpinner.adapter = sourceAdapter
         targetCurrencySpinner.adapter = targetAdapter
-        
-        // Set default selections
-        sourceCurrencySpinner.setSelection(0) // USD
-        targetCurrencySpinner.setSelection(1) // EUR
+    }
+
+    private fun loadExistingConfiguration() {
+        isReconfigure = preferences.hasConfig(widgetId)
+        if (isReconfigure) {
+            titleText.setText(R.string.edit_widget_title)
+            addWidgetButton.setText(R.string.save_changes)
+        }
+
+        sourceCurrencySpinner.setSelection(preferences.getSourceCurrency(widgetId).ordinal)
+        targetCurrencySpinner.setSelection(preferences.getTargetCurrency(widgetId).ordinal)
+        themeSpinner.setSelection(preferences.getTheme(widgetId).ordinal)
+        seekBarOpacity.progress = 100 - preferences.getOpacity(widgetId)
+
+        val frequencyRadioId = when (preferences.getUpdateFrequency(widgetId)) {
+            UpdateFrequency.TWELVE_HOURS -> R.id.radio12Hours
+            UpdateFrequency.WEEKLY -> R.id.radioWeekly
+            else -> R.id.radioDaily
+        }
+        updateFrequencyRadioGroup.check(frequencyRadioId)
     }
 
     private fun setupThemeSpinner() {
@@ -349,6 +380,9 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         
         val selectedTheme = WidgetTheme.values()[themeSpinner.selectedItemPosition]
         val opacity = 100 - seekBarOpacity.progress
+        val previousSource = preferences.getSourceCurrency(widgetId)
+        val previousTarget = preferences.getTargetCurrency(widgetId)
+        val currenciesChanged = previousSource != sourceCurrency || previousTarget != targetCurrency
 
         // Show loading
         addWidgetButton.isEnabled = false
@@ -360,17 +394,28 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         preferences.setUpdateFrequency(widgetId, updateFrequency)
         preferences.setTheme(widgetId, selectedTheme)
         preferences.setOpacity(widgetId, opacity)
-        preferences.setCurrentInput(widgetId, "0")
-        
-        // Fetch initial exchange rate
+        if (!isReconfigure) {
+            preferences.setCurrentInput(widgetId, "0")
+        }
+
+        // Fetch initial exchange rate (skip when only theme/frequency/opacity changed)
         lifecycleScope.launch {
             try {
-                val result = repository.getExchangeRate(sourceCurrency, targetCurrency, forceRefresh = true)
-                
-                if (result.isSuccess) {
+                val fetchError = if (!isReconfigure || currenciesChanged) {
+                    val result = repository.getExchangeRate(sourceCurrency, targetCurrency, forceRefresh = true)
+                    if (result.isSuccess || preferences.getCachedRate(sourceCurrency, targetCurrency) != null) {
+                        null
+                    } else {
+                        result.exceptionOrNull()?.message ?: "Unknown error"
+                    }
+                } else {
+                    null
+                }
+
+                if (fetchError == null) {
                     // Schedule periodic updates
                     WidgetUpdateWorker.scheduleUpdate(applicationContext, widgetId, updateFrequency)
-                    
+
                     // Update the widget
                     val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
                     CurrencyConverterWidget.updateWidget(
@@ -378,13 +423,8 @@ class WidgetConfigurationActivity : AppCompatActivity() {
                         appWidgetManager,
                         widgetId
                     )
-                    
-                    // Return success
-                    val resultValue = Intent().apply {
-                        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                    }
-                    setResult(RESULT_OK, resultValue)
-                    finish()
+
+                    finishAfterSuccessfulSave()
                 } else {
                     // Failed to get rate
                     runOnUiThread {
@@ -392,7 +432,7 @@ class WidgetConfigurationActivity : AppCompatActivity() {
                         addWidgetButton.isEnabled = true
                         android.widget.Toast.makeText(
                             this@WidgetConfigurationActivity,
-                            "Failed to fetch exchange rate: ${result.exceptionOrNull()?.message}. Please try again.",
+                            "Failed to fetch exchange rate: ${fetchError}. Please try again.",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -408,6 +448,51 @@ class WidgetConfigurationActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun finishAfterSuccessfulSave() {
+        if (!isReconfigure) {
+            val resultValue = Intent().apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+            }
+            setResult(RESULT_OK, resultValue)
+            finish()
+            return
+        }
+
+        preferences.recordSuccessfulEdit().let { edits ->
+            if (preferences.shouldPromptInAppReview(edits)) {
+                progressBar.visibility = View.GONE
+                addWidgetButton.isEnabled = true
+                preferences.markInAppReviewPrompted()
+                launchInAppReviewThenClose()
+            } else {
+                closeConfiguration()
+            }
+        }
+    }
+
+    private fun launchInAppReviewThenClose() {
+        val manager = ReviewManagerFactory.create(this)
+        manager.requestReviewFlow().addOnCompleteListener { request ->
+            if (isDestroyed) return@addOnCompleteListener
+            if (!request.isSuccessful) {
+                closeConfiguration()
+                return@addOnCompleteListener
+            }
+            manager.launchReviewFlow(this, request.result).addOnCompleteListener {
+                closeConfiguration()
+            }
+        }
+    }
+
+    private fun closeConfiguration() {
+        if (isDestroyed) return
+        if (isReconfigure) {
+            finishAndRemoveTask()
+        } else {
+            finish()
         }
     }
 }

@@ -91,6 +91,32 @@ class WidgetPreferences(context: Context) {
         prefs.edit().putLong(key, timestamp).apply()
     }
 
+    fun hasConfig(widgetId: Int): Boolean {
+        return prefs.contains(getKey(widgetId, KEY_SOURCE_CURRENCY))
+    }
+
+    fun recordSuccessfulEdit(): Int {
+        val count = getSuccessfulEditCount() + 1
+        prefs.edit().putInt(KEY_SUCCESSFUL_EDITS, count).apply()
+        return count
+    }
+
+    fun shouldPromptInAppReview(successfulEdits: Int = getSuccessfulEditCount()): Boolean {
+        if (successfulEdits < MIN_SUCCESSFUL_EDITS_BEFORE_REVIEW) return false
+        val lastPromptAt = prefs.getLong(KEY_LAST_REVIEW_PROMPT_AT, 0L)
+        if (lastPromptAt == 0L) return true
+        val elapsedMs = System.currentTimeMillis() - lastPromptAt
+        return elapsedMs >= REVIEW_PROMPT_COOLDOWN_DAYS * DAY_MS
+    }
+
+    fun markInAppReviewPrompted() {
+        prefs.edit().putLong(KEY_LAST_REVIEW_PROMPT_AT, System.currentTimeMillis()).apply()
+    }
+
+    private fun getSuccessfulEditCount(): Int {
+        return prefs.getInt(KEY_SUCCESSFUL_EDITS, 0)
+    }
+
     fun deleteWidgetConfig(widgetId: Int) {
         prefs.edit()
             .remove(getKey(widgetId, KEY_SOURCE_CURRENCY))
@@ -121,6 +147,13 @@ class WidgetPreferences(context: Context) {
         private const val KEY_CURRENT_INPUT = "current_input"
         private const val KEY_THEME = "theme"
         private const val KEY_OPACITY = "opacity"
+        private const val KEY_SUCCESSFUL_EDITS = "successful_edits"
+        private const val KEY_LAST_REVIEW_PROMPT_AT = "last_review_prompt_at"
+
+        /** Skip the first edit so we don't ask immediately after someone discovers the pencil. */
+        const val MIN_SUCCESSFUL_EDITS_BEFORE_REVIEW = 2
+        const val REVIEW_PROMPT_COOLDOWN_DAYS = 30L
+        private const val DAY_MS = 24L * 60L * 60L * 1000L
     }
 }
 

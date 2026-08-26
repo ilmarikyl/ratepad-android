@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.graphics.ColorUtils
 import com.ilmariware.currencyconverterwidget.R
+import com.ilmariware.currencyconverterwidget.WidgetConfigurationActivity
 import com.ilmariware.currencyconverterwidget.data.CurrencyRepository
 import com.ilmariware.currencyconverterwidget.data.WidgetPreferences
 import kotlinx.coroutines.CoroutineScope
@@ -135,19 +136,20 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 views.setTextColor(R.id.inputDisplay, theme.textColor)
                 views.setTextColor(R.id.targetCurrencyLabel, theme.targetTextColor)
                 views.setTextColor(R.id.outputDisplay, theme.targetTextColor)
-                if (opacity < 100) {
-                    views.setTextColor(R.id.lastUpdatedLabel, theme.buttonTextColor)
-                    views.setTextColor(R.id.lastUpdatedText, theme.buttonTextColor)
-                } else {
-                    views.setTextColor(R.id.lastUpdatedLabel, theme.timestampColor)
-                    views.setTextColor(R.id.lastUpdatedText, theme.timestampColor)
-                }
+                val timestampTint = if (opacity < 100) theme.buttonTextColor else theme.timestampColor
+                views.setTextColor(R.id.lastUpdatedLabel, timestampTint)
+                views.setTextColor(R.id.lastUpdatedText, timestampTint)
 
-                // Tint swap button to match theme
+                // Tint swap and edit buttons to match theme
                 try {
                     views.setInt(R.id.btnSwap, "setColorFilter", theme.textColor)
                 } catch (e: Exception) {
                     Log.d(TAG, "Could not set swap button color")
+                }
+                try {
+                    views.setInt(R.id.btnEdit, "setColorFilter", timestampTint)
+                } catch (e: Exception) {
+                    Log.d(TAG, "Could not set edit button color")
                 }
                 
                 // Set currency labels
@@ -311,6 +313,32 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 views.setOnClickPendingIntent(R.id.btnSwap, swapPendingIntent)
             } catch (e: Exception) {
                 // Layout doesn't have swap button
+            }
+
+            // Edit / reconfigure button
+            try {
+                val editIntent = Intent(context, WidgetConfigurationActivity::class.java).apply {
+                    action = AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+
+                val editPendingIntent = PendingIntent.getActivity(
+                    context,
+                    widgetId * 100 + 97,
+                    editIntent,
+                    flags
+                )
+
+                views.setOnClickPendingIntent(R.id.btnEdit, editPendingIntent)
+            } catch (e: Exception) {
+                // Layout doesn't have edit button
             }
         }
 

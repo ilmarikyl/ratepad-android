@@ -130,6 +130,10 @@
 -keep class com.ilmariware.currencyconverterwidget.MainActivity { *; }
 -keep class com.ilmariware.currencyconverterwidget.WidgetConfigurationActivity { *; }
 
+# ========== Play In-App Review ==========
+-keep class com.google.android.play.core.review.** { *; }
+-dontwarn com.google.android.play.core.review.**
+
 # ========== WorkManager ==========
 -keep class * extends androidx.work.Worker
 -keep class * extends androidx.work.CoroutineWorker { *; }

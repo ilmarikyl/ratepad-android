@@ -86,32 +86,48 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Last update timestamp -->
-    <LinearLayout
+    <!-- Last update timestamp + edit -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:paddingBottom="2dp">
 
-        <TextView
-            android:id="@+id/lastUpdatedLabel"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rate updated: "
-            android:textSize="9sp"
-            android:textColor="#999999" />
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/lastUpdatedText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Just now"
-            android:textSize="9sp"
-            android:textStyle="bold"
-            android:textColor="#999999" />
+            <TextView
+                android:id="@+id/lastUpdatedLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rate updated: "
+                android:textSize="9sp"
+                android:textColor="#999999" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/lastUpdatedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Just now"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:textColor="#999999" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnEdit"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="end|center_vertical"
+            android:src="@drawable/ic_edit"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:padding="1dp"
+            android:contentDescription="@string/edit_widget" />
+    </FrameLayout>
 
     <!-- Row 1 -->
     <LinearLayout
