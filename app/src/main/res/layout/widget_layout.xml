@@ -40,7 +40,9 @@
                 android:text="0"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:maxLines="1"
+                android:ellipsize="none" />
         </LinearLayout>
 
         <!-- Swap currencies button - aligned to top with currency labels -->
@@ -82,22 +84,26 @@
                 android:textSize="18sp"
                 android:textColor="#1976D2"
                 android:textStyle="bold"
-                android:gravity="end" />
+                android:gravity="end"
+                android:maxLines="1"
+                android:ellipsize="none" />
         </LinearLayout>
     </LinearLayout>
 
     <!-- Last update timestamp + edit -->
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingBottom="2dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_weight="1"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center_vertical|start">
 
             <TextView
                 android:id="@+id/lastUpdatedLabel"
@@ -105,7 +111,8 @@
                 android:layout_height="wrap_content"
                 android:text="Rate updated: "
                 android:textSize="9sp"
-                android:textColor="#999999" />
+                android:textColor="#999999"
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/lastUpdatedText"
@@ -114,20 +121,21 @@
                 android:text="Just now"
                 android:textSize="9sp"
                 android:textStyle="bold"
-                android:textColor="#999999" />
+                android:textColor="#999999"
+                android:maxLines="1" />
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/btnEdit"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_gravity="end|center_vertical"
+            android:layout_marginStart="6dp"
             android:src="@drawable/ic_edit"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:padding="1dp"
             android:contentDescription="@string/edit_widget" />
-    </FrameLayout>
+    </LinearLayout>
 
     <!-- Row 1 -->
     <LinearLayout

@@ -6,7 +6,9 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.widget.RemoteViews
 import androidx.core.graphics.ColorUtils
 import com.ilmariware.currencyconverterwidget.R
@@ -46,6 +48,15 @@ class CurrencyConverterWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {
         // Last widget removed
+    }
+
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle
+    ) {
+        updateWidget(context, appWidgetManager, appWidgetId)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -155,46 +166,56 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 // Set currency labels
                 views.setTextViewText(R.id.sourceCurrencyLabel, sourceCurrency.code)
                 views.setTextViewText(R.id.targetCurrencyLabel, targetCurrency.code)
-                
-                // Set input display
-                views.setTextViewText(R.id.inputDisplay, formatNumber(currentInput))
-                
-                // Calculate and set output using cached rate (synchronous)
+
+                val inputText = formatNumber(currentInput)
+                views.setTextViewText(R.id.inputDisplay, inputText)
+
                 val inputValue = currentInput.toDoubleOrNull() ?: 0.0
                 val cachedRate = preferences.getCachedRate(sourceCurrency, targetCurrency)
-                
+
                 Log.d(TAG, "Cached rate: $cachedRate, input value: $inputValue")
-                
-                if (cachedRate != null) {
+
+                val outputText = if (cachedRate != null) {
                     val converted = inputValue * cachedRate
                     val formattedOutput = String.format(Locale.US, "%.2f", converted)
-                    views.setTextViewText(R.id.outputDisplay, formattedOutput)
                     Log.d(TAG, "Output set to: $formattedOutput")
-                    
-                    // Update timestamp (if it exists in the layout)
+
                     try {
                         val timestamp = preferences.getCachedRateTimestamp(sourceCurrency, targetCurrency)
-                        val timeText = formatTimestamp(timestamp)
-                        views.setTextViewText(R.id.lastUpdatedText, timeText)
+                        views.setTextViewText(R.id.lastUpdatedText, formatTimestamp(timestamp))
                     } catch (e: Exception) {
-                        // Layout doesn't have timestamp
                         Log.d(TAG, "No timestamp display in this layout")
                     }
+                    formattedOutput
                 } else {
                     Log.w(TAG, "No cached rate found!")
-                    views.setTextViewText(R.id.outputDisplay, "0.00")
-                    
-                    // Fetch rate in background
                     CoroutineScope(Dispatchers.IO).launch {
                         val repository = CurrencyRepository(context)
                         repository.getExchangeRate(sourceCurrency, targetCurrency, forceRefresh = false)
-                        // After fetching, update widget again
                         updateWidget(context, appWidgetManager, widgetId)
                     }
+                    "0.00"
                 }
+                views.setTextViewText(R.id.outputDisplay, outputText)
+
+                val widgetWidthDp = currentWidgetWidthDp(appWidgetManager, widgetId)
+                val fontScale = context.resources.configuration.fontScale
+                val timestampSizeSp = timestampTextSizeSp(widgetWidthDp)
+                views.setTextViewTextSize(R.id.lastUpdatedLabel, TypedValue.COMPLEX_UNIT_SP, timestampSizeSp)
+                views.setTextViewTextSize(R.id.lastUpdatedText, TypedValue.COMPLEX_UNIT_SP, timestampSizeSp)
+                views.setTextViewTextSize(
+                    R.id.inputDisplay,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    amountTextSizeSp(inputText, widgetWidthDp, fontScale)
+                )
+                views.setTextViewTextSize(
+                    R.id.outputDisplay,
+                    TypedValue.COMPLEX_UNIT_SP,
+                    amountTextSizeSp(outputText, widgetWidthDp, fontScale)
+                )
                 
                 // Apply button colors
-                applyButtonColors(views, theme)
+                applyButtonColors(views, theme, widgetWidthDp)
                 
                 // Set up button click listeners
                 setupButtonListeners(context, views, widgetId)
@@ -209,7 +230,11 @@ class CurrencyConverterWidget : AppWidgetProvider() {
             }
         }
 
-        private fun applyButtonColors(views: RemoteViews, theme: com.ilmariware.currencyconverterwidget.data.models.WidgetTheme) {
+        private fun applyButtonColors(
+            views: RemoteViews,
+            theme: com.ilmariware.currencyconverterwidget.data.models.WidgetTheme,
+            widgetWidthDp: Int
+        ) {
             val buttonIds = listOf(
                 R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4,
                 R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9,
@@ -220,10 +245,24 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 try {
                     views.setInt(buttonId, "setBackgroundResource", theme.buttonBackgroundDrawable)
                     views.setTextColor(buttonId, theme.buttonTextColor)
+                    views.setTextViewTextSize(
+                        buttonId,
+                        TypedValue.COMPLEX_UNIT_SP,
+                        buttonLabelSizeSp(widgetWidthDp, buttonId)
+                    )
                 } catch (e: Exception) {
                     Log.d(TAG, "Could not set color for button $buttonId")
                 }
             }
+        }
+
+        /** 18sp at 3-cell width, shrinking toward 14sp when the widget is 120dp wide. */
+        private fun buttonLabelSizeSp(widgetWidthDp: Int, buttonId: Int): Float {
+            val baseSp = if (buttonId == R.id.btn000) BUTTON_000_TEXT_MAX_SP else BUTTON_TEXT_MAX_SP
+            val minSp = if (buttonId == R.id.btn000) BUTTON_000_TEXT_MIN_SP else BUTTON_TEXT_MIN_SP
+            val range = (COMFORTABLE_WIDGET_WIDTH_DP - COMPACT_WIDGET_WIDTH_DP).toFloat()
+            val t = ((widgetWidthDp - COMPACT_WIDGET_WIDTH_DP) / range).coerceIn(0f, 1f)
+            return minSp + (baseSp - minSp) * t
         }
 
         private fun setupButtonListeners(context: Context, views: RemoteViews, widgetId: Int) {
@@ -342,6 +381,31 @@ class CurrencyConverterWidget : AppWidgetProvider() {
             }
         }
 
+        /** 9sp at 3-cell width, a bit smaller at 120dp so the full timestamp fits beside the edit icon. */
+        private fun timestampTextSizeSp(widgetWidthDp: Int): Float {
+            val range = (COMFORTABLE_WIDGET_WIDTH_DP - COMPACT_WIDGET_WIDTH_DP).toFloat()
+            val t = ((widgetWidthDp - COMPACT_WIDGET_WIDTH_DP) / range).coerceIn(0f, 1f)
+            return TIMESTAMP_TEXT_MIN_SP + (TIMESTAMP_TEXT_MAX_SP - TIMESTAMP_TEXT_MIN_SP) * t
+        }
+
+        private fun currentWidgetWidthDp(appWidgetManager: AppWidgetManager, widgetId: Int): Int {
+            val options = appWidgetManager.getAppWidgetOptions(widgetId)
+            val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
+            return if (minWidth > 0) minWidth else DEFAULT_WIDGET_WIDTH_DP
+        }
+
+        /**
+         * Shrinks amount text so it stays on one line in the current widget width.
+         * Each amount uses roughly half the display, after padding and the swap icon.
+         */
+        private fun amountTextSizeSp(text: String, widgetWidthDp: Int, fontScale: Float): Float {
+            if (text.isEmpty()) return AMOUNT_TEXT_MAX_SP
+            val columnWidthDp = ((widgetWidthDp - DISPLAY_CHROME_DP) / 2f).coerceAtLeast(40f)
+            val charWidthAt1sp = DIGIT_WIDTH_EM * fontScale.coerceAtLeast(0.85f)
+            val fitted = columnWidthDp / (text.length * charWidthAt1sp)
+            return fitted.coerceIn(AMOUNT_TEXT_MIN_SP, AMOUNT_TEXT_MAX_SP)
+        }
+
         private fun formatNumber(input: String): String {
             return if (input.isEmpty() || input == "0") "0" else input
         }
@@ -365,6 +429,21 @@ class CurrencyConverterWidget : AppWidgetProvider() {
         }
 
         private const val TAG = "CurrencyConverterWidget"
+        private const val DEFAULT_WIDGET_WIDTH_DP = 180
+        private const val COMPACT_WIDGET_WIDTH_DP = 120
+        private const val COMFORTABLE_WIDGET_WIDTH_DP = 180
+        /** Root padding + display padding + swap button and margins. */
+        private const val DISPLAY_CHROME_DP = 54
+        /** Approximate width of a bold digit, as a fraction of the text size in sp. */
+        private const val DIGIT_WIDTH_EM = 0.65f
+        private const val AMOUNT_TEXT_MAX_SP = 18f
+        private const val AMOUNT_TEXT_MIN_SP = 9f
+        private const val BUTTON_TEXT_MAX_SP = 18f
+        private const val BUTTON_TEXT_MIN_SP = 14f
+        private const val BUTTON_000_TEXT_MAX_SP = 16f
+        private const val BUTTON_000_TEXT_MIN_SP = 12f
+        private const val TIMESTAMP_TEXT_MAX_SP = 9f
+        private const val TIMESTAMP_TEXT_MIN_SP = 8f
     }
 }
 
