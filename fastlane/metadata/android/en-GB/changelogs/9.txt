@@ -1,0 +1,4 @@
+• Thousands separators make large amounts easier to read, using your local format
+• Option to hide decimals on the converted amount
+• Copying a result leaves out the separators
+• New Royal Red theme

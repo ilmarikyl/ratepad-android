@@ -1,0 +1,4 @@
+• Separadores de miles para leer mejor los importes grandes, según tu formato local
+• Opción para ocultar los decimales del importe convertido
+• Al copiar el resultado no se incluyen los separadores
+• Nuevo tema Royal Red

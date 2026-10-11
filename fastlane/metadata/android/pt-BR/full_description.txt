@@ -13,7 +13,7 @@ Converta moedas direto da tela inicial com uma interface de calculadora!
 Comuns: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
 Também: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
 
-🎨 6 temas de cores
+🎨 7 temas de cores
 
 ⚡ Recursos inteligentes
 • Transparência de fundo ajustável

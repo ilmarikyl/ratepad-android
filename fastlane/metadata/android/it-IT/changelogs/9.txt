@@ -1,0 +1,4 @@
+• Separatori delle migliaia per leggere meglio gli importi grandi, nel formato locale
+• Opzione per nascondere i decimali sull’importo convertito
+• Copiando il risultato, i separatori non vengono inclusi
+• Nuovo tema Royal Red

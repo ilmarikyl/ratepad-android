@@ -1,0 +1,4 @@
+• Separadores de milhar para ler melhor os valores grandes, no seu formato local
+• Opção para ocultar os decimais do valor convertido
+• Ao copiar o resultado, os separadores não são incluídos
+• Novo tema Royal Red

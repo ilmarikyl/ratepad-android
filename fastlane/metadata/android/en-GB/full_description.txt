@@ -13,7 +13,7 @@ Convert currencies directly from your home screen with a calculator-style interf
 Common: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
 Also: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
 
-🎨 6 colour themes
+🎨 7 colour themes
 
 ⚡ Smart features
 • Adjustable background transparency
