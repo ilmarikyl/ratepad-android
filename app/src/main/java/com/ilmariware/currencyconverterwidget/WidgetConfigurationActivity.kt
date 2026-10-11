@@ -26,12 +26,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.ilmariware.currencyconverterwidget.data.CurrencyRepository
 import com.ilmariware.currencyconverterwidget.data.WidgetPreferences
 import com.ilmariware.currencyconverterwidget.data.models.Currency
 import com.ilmariware.currencyconverterwidget.data.models.UpdateFrequency
 import com.ilmariware.currencyconverterwidget.data.models.WidgetTheme
+import com.ilmariware.currencyconverterwidget.widget.AmountFormat
 import com.ilmariware.currencyconverterwidget.widget.CurrencyConverterWidget
 import com.ilmariware.currencyconverterwidget.widget.WidgetUpdateWorker
 import kotlinx.coroutines.launch
@@ -48,6 +50,7 @@ class WidgetConfigurationActivity : AppCompatActivity() {
     private lateinit var addWidgetButton: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var seekBarOpacity: SeekBar
+    private lateinit var showDecimalsSwitch: MaterialSwitch
     private lateinit var opacityValueText: TextView
     private lateinit var previewContainer: FrameLayout
     private lateinit var widgetPreview: LinearLayout
@@ -110,6 +113,7 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         addWidgetButton = findViewById(R.id.addWidgetButton)
         progressBar = findViewById(R.id.progressBar)
         seekBarOpacity = findViewById(R.id.seekBarOpacity)
+        showDecimalsSwitch = findViewById(R.id.showDecimalsSwitch)
         opacityValueText = findViewById(R.id.opacityValueText)
         previewContainer = findViewById(R.id.previewContainer)
         widgetPreview = findViewById(R.id.widgetPreview)
@@ -190,6 +194,10 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         }
 
         opacityValueText.text = "$transparency%"
+
+        val showDecimals = showDecimalsSwitch.isChecked
+        previewInputDisplay.text = AmountFormat.formatInput(PREVIEW_INPUT)
+        previewOutputDisplay.text = AmountFormat.formatResult(PREVIEW_OUTPUT, showDecimals)
     }
 
     private fun setupSpinners() {
@@ -211,6 +219,7 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         targetCurrencySpinner.setSelection(preferences.getTargetCurrency(widgetId).ordinal)
         themeSpinner.setSelection(preferences.getTheme(widgetId).ordinal)
         seekBarOpacity.progress = 100 - preferences.getOpacity(widgetId)
+        showDecimalsSwitch.isChecked = preferences.getShowDecimals(widgetId)
 
         val frequencyRadioId = when (preferences.getUpdateFrequency(widgetId)) {
             UpdateFrequency.TWELVE_HOURS -> R.id.radio12Hours
@@ -356,6 +365,10 @@ class WidgetConfigurationActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
+
+        showDecimalsSwitch.setOnCheckedChangeListener { _, _ ->
+            updatePreview()
+        }
     }
 
     private fun saveConfigurationAndFinish() {
@@ -394,6 +407,7 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         preferences.setUpdateFrequency(widgetId, updateFrequency)
         preferences.setTheme(widgetId, selectedTheme)
         preferences.setOpacity(widgetId, opacity)
+        preferences.setShowDecimals(widgetId, showDecimalsSwitch.isChecked)
         if (!isReconfigure) {
             preferences.setCurrentInput(widgetId, "0")
         }
@@ -494,6 +508,11 @@ class WidgetConfigurationActivity : AppCompatActivity() {
         } else {
             finish()
         }
+    }
+
+    companion object {
+        private const val PREVIEW_INPUT = "1234.56"
+        private const val PREVIEW_OUTPUT = 9876.5
     }
 }
 

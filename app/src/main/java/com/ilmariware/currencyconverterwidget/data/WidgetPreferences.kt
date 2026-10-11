@@ -58,6 +58,14 @@ class WidgetPreferences(context: Context) {
         prefs.edit().putInt(getKey(widgetId, KEY_OPACITY), opacity.coerceIn(0, 100)).apply()
     }
 
+    fun getShowDecimals(widgetId: Int): Boolean {
+        return prefs.getBoolean(getKey(widgetId, KEY_SHOW_DECIMALS), true)
+    }
+
+    fun setShowDecimals(widgetId: Int, showDecimals: Boolean) {
+        prefs.edit().putBoolean(getKey(widgetId, KEY_SHOW_DECIMALS), showDecimals).apply()
+    }
+
     // Widget state
     fun getCurrentInput(widgetId: Int): String {
         return prefs.getString(getKey(widgetId, KEY_CURRENT_INPUT), "0") ?: "0"
@@ -124,6 +132,7 @@ class WidgetPreferences(context: Context) {
             .remove(getKey(widgetId, KEY_UPDATE_FREQUENCY))
             .remove(getKey(widgetId, KEY_CURRENT_INPUT))
             .remove(getKey(widgetId, KEY_OPACITY))
+            .remove(getKey(widgetId, KEY_SHOW_DECIMALS))
             .apply()
     }
 
@@ -147,6 +156,7 @@ class WidgetPreferences(context: Context) {
         private const val KEY_CURRENT_INPUT = "current_input"
         private const val KEY_THEME = "theme"
         private const val KEY_OPACITY = "opacity"
+        private const val KEY_SHOW_DECIMALS = "show_decimals"
         private const val KEY_SUCCESSFUL_EDITS = "successful_edits"
         private const val KEY_LAST_REVIEW_PROMPT_AT = "last_review_prompt_at"
 

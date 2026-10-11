@@ -127,7 +127,7 @@ class CurrencyConverterWidget : AppWidgetProvider() {
         val inputValue = preferences.getCurrentInput(widgetId).toDoubleOrNull() ?: 0.0
         val cachedRate = preferences.getCachedRate(sourceCurrency, targetCurrency)
         val resultText = if (cachedRate != null) {
-            String.format(Locale.US, "%.2f", inputValue * cachedRate)
+            AmountFormat.rawResult(inputValue * cachedRate)
         } else {
             "0.00"
         }
@@ -201,8 +201,11 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                 views.setTextViewText(R.id.sourceCurrencyLabel, sourceCurrency.code)
                 views.setTextViewText(R.id.targetCurrencyLabel, targetCurrency.code)
 
-                val inputText = formatNumber(currentInput)
+                val locale = displayLocale(context)
+                val showDecimals = preferences.getShowDecimals(widgetId)
+                val inputText = AmountFormat.formatInput(currentInput, locale)
                 views.setTextViewText(R.id.inputDisplay, inputText)
+                views.setTextViewText(R.id.btnDot, AmountFormat.decimalSeparator(locale).toString())
 
                 val inputValue = currentInput.toDoubleOrNull() ?: 0.0
                 val cachedRate = preferences.getCachedRate(sourceCurrency, targetCurrency)
@@ -211,7 +214,7 @@ class CurrencyConverterWidget : AppWidgetProvider() {
 
                 val outputText = if (cachedRate != null) {
                     val converted = inputValue * cachedRate
-                    val formattedOutput = String.format(Locale.US, "%.2f", converted)
+                    val formattedOutput = AmountFormat.formatResult(converted, showDecimals, locale)
                     Log.d(TAG, "Output set to: $formattedOutput")
 
                     try {
@@ -228,7 +231,7 @@ class CurrencyConverterWidget : AppWidgetProvider() {
                         repository.getExchangeRate(sourceCurrency, targetCurrency, forceRefresh = false)
                         updateWidget(context, appWidgetManager, widgetId)
                     }
-                    "0.00"
+                    AmountFormat.formatResult(0.0, showDecimals, locale)
                 }
                 views.setTextViewText(R.id.outputDisplay, outputText)
 
@@ -466,8 +469,14 @@ class CurrencyConverterWidget : AppWidgetProvider() {
             return fitted.coerceIn(AMOUNT_TEXT_MIN_SP, AMOUNT_TEXT_MAX_SP)
         }
 
-        private fun formatNumber(input: String): String {
-            return if (input.isEmpty() || input == "0") "0" else input
+        private fun displayLocale(context: Context): Locale {
+            return try {
+                val locales = context.resources.configuration.locales
+                val locale = if (locales.isEmpty) null else locales[0]
+                if (locale == null || locale.language.isEmpty()) Locale.US else locale
+            } catch (e: Exception) {
+                Locale.US
+            }
         }
 
         private fun formatTimestamp(timestamp: Long): String {

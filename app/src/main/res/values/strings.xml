@@ -9,4 +9,6 @@
     <string name="copy_result">Copy converted amount</string>
     <string name="copied_result_label">Converted amount</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="show_decimals">Show decimals</string>
+    <string name="show_decimals_summary">Converted amounts show two decimal places. Turn this off for a whole number.</string>
 </resources>

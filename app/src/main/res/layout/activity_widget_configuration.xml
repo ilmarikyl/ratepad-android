@@ -164,6 +164,57 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/decimalsCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/updateFrequencyCard">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/show_decimals"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/show_decimals_summary"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/showDecimalsSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:contentDescription="@string/show_decimals" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Theme Selection Section -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/themeCard"
@@ -174,7 +225,7 @@
             app:cardCornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/updateFrequencyCard">
+            app:layout_constraintTop_toBottomOf="@id/decimalsCard">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -299,10 +350,12 @@
 
                                 <TextView
                                     android:id="@+id/previewInputDisplay"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="1.00"
-                                    android:textSize="16sp"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="1,234.56"
+                                    android:textSize="14sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -326,10 +379,12 @@
                                     android:id="@+id/previewOutputDisplay"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="0.92"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:gravity="end" />
+                                    android:ellipsize="end"
+                                    android:gravity="end"
+                                    android:maxLines="1"
+                                    android:text="9,876.50"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
                             </LinearLayout>
                         </LinearLayout>
 
