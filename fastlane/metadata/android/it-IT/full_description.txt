@@ -9,9 +9,9 @@ Converti le valute dalla schermata Home con un’interfaccia a calcolatrice!
 • Conversione in tempo reale mentre scrivi
 • Inserimento rapido con 000, cancella e azzera
 
-💱 40 valute principali
+💱 41 valute principali
 Comuni: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
-Anche: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
+Anche: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KZT, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
 
 🎨 7 temi colore
 

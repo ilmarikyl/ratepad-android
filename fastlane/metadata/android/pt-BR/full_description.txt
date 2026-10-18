@@ -9,9 +9,9 @@ Converta moedas direto da tela inicial com uma interface de calculadora!
 • Conversão em tempo real enquanto você digita
 • Atalho 000, backspace e limpar
 
-💱 40 moedas principais
+💱 41 moedas principais
 Comuns: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
-Também: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
+Também: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KZT, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
 
 🎨 7 temas de cores
 

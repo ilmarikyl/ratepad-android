@@ -24,6 +24,7 @@ enum class Currency(val code: String, val displayName: String, val symbol: Strin
     ILS("ILS", "Israeli Shekel", "₪"),
     ISK("ISK", "Icelandic Króna", "kr"),
     KRW("KRW", "South Korean Won", "₩"),
+    KZT("KZT", "Kazakhstani Tenge", "₸"),
     KWD("KWD", "Kuwaiti Dinar", "د.ك"),
     MXN("MXN", "Mexican Peso", "MX$"),
     MYR("MYR", "Malaysian Ringgit", "RM"),

@@ -9,9 +9,9 @@ Convert currencies directly from your home screen with a calculator-style interf
 • Real-time conversion as you type
 • Quick 000 entry, backspace and clear
 
-💱 40 major currencies
+💱 41 major currencies
 Common: USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR
-Also: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
+Also: AED, BGN, BRL, CZK, DKK, HKD, HUF, IDR, ILS, ISK, KRW, KZT, KWD, MXN, MYR, NOK, NZD, PHP, PKR, PLN, QAR, RON, RUB, SAR, SEK, SGD, THB, TRY, TWD, UAH, VND, ZAR
 
 🎨 7 colour themes
 

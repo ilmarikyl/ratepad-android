@@ -27,7 +27,7 @@ This Android widget allows users to convert currencies directly from their home 
 - Calculator-style number pad interface
 - Real-time conversion as you type
 - **Swap button** to quickly exchange source and target currencies
-- Support for 40 major currencies with grouped display (9 common + 31 additional)
+- Support for 41 major currencies with grouped display (9 common + 32 additional)
 - Six color themes (Classic, Dark, Ocean Blue, Mint Green, Sunset, Purple)
 - Adjustable widget transparency (0–100%) with live preview in configuration screen
 - Configurable update intervals (12 hours, daily, weekly)
@@ -64,7 +64,7 @@ app/src/main/java/com/ilmariware/currencyconverterwidget/
 │   ├── FallbackExchangeRateApi.kt          # Fallback API (jsDelivr CDN)
 │   ├── WidgetPreferences.kt                # SharedPreferences wrapper
 │   └── models/
-│       ├── Currency.kt                     # Currency enum (40 currencies)
+│       ├── Currency.kt                     # Currency enum (41 currencies)
 │       ├── ExchangeRate.kt                 # Data models
 │       ├── UpdateFrequency.kt              # Update interval enum
 │       └── WidgetTheme.kt                  # Theme definitions (6 themes)
@@ -89,7 +89,7 @@ app/src/main/res/
 
 ### 1. Supported Currencies
 
-The widget supports **40 major world currencies** organized in two groups:
+The widget supports **41 major world currencies** organized in two groups:
 
 **Common Currencies (9):**
 
@@ -103,7 +103,7 @@ The widget supports **40 major world currencies** organized in two groups:
 - CNY (Chinese Yuan)
 - INR (Indian Rupee)
 
-**All Currencies (31 additional):**
+**All Currencies (32 additional):**
 
 - AED (UAE Dirham)
 - BGN (Bulgarian Lev)
@@ -116,6 +116,7 @@ The widget supports **40 major world currencies** organized in two groups:
 - ILS (Israeli Shekel)
 - ISK (Icelandic Króna)
 - KRW (South Korean Won)
+- KZT (Kazakhstani Tenge)
 - KWD (Kuwaiti Dinar)
 - MXN (Mexican Peso)
 - MYR (Malaysian Ringgit)
@@ -139,7 +140,7 @@ The widget supports **40 major world currencies** organized in two groups:
 
 In the configuration screen, currencies are displayed in a grouped dropdown with section headers for easy navigation.
 
-**Note:** Most currencies are fetched from the Frankfurter API (European Central Bank data). Currencies not supported by Frankfurter (like TWD) automatically use the fallback API.
+**Note:** Most currencies are fetched from the Frankfurter API (European Central Bank data). Currencies not supported by Frankfurter (like TWD and KZT) automatically use the fallback API.
 
 ### 2. Widget Configuration Flow
 
@@ -290,7 +291,7 @@ Example response:
 
 The app automatically falls back to this API when:
 - The primary Frankfurter API fails
-- The requested currency is not supported by Frankfurter (e.g., TWD)
+- The requested currency is not supported by Frankfurter (e.g., TWD, KZT)
 
 ## 📝 License
 

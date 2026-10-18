@@ -1,1 +1,1 @@
-Widget conversor de moedas com calculadora. 40 moedas, 7 temas.
+Widget conversor de moedas com calculadora. 41 moedas, 7 temas.

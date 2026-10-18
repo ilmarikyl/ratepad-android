@@ -1,1 +1,1 @@
-Currency converter widget with calculator interface. 40 currencies, 7 themes.
+Currency converter widget with calculator interface. 41 currencies, 7 themes.
